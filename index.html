@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secret Santa for January</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #f4f4f4;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Snowflake animation background */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: rgba(255, 255, 255, 0.3);
+            font-size: 1em;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+
+        .slide {
+            display: none;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        .slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #ffd700;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h2 {
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            color: #ffd700;
+        }
+
+        p {
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #f4f4f4;
+        }
+
+        .italic {
+            font-style: italic;
+            color: #ffd700;
+        }
+
+        button {
+            background: #ffd700;
+            color: #1a1a2e;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            margin: 10px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        }
+
+        button:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.4);
+        }
+
+        button.secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #f4f4f4;
+            box-shadow: none;
+        }
+
+        button.secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .gift-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .gift-title {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .back-arrow {
+            margin-top: 30px;
+            font-size: 0.9em;
+            background: transparent;
+            color: rgba(244, 244, 244, 0.5);
+            box-shadow: none;
+            padding: 10px 20px;
+        }
+
+        .back-arrow:hover {
+            color: rgba(244, 244, 244, 0.8);
+            background: transparent;
+            transform: translateY(0);
+        }
+
+        .gift-instruction {
+            background: rgba(255, 215, 0, 0.1);
+            border-left: 4px solid #ffd700;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 5px;
+        }
+
+        .gift-instruction h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .small-text {
+            font-size: 0.9em;
+            color: rgba(244, 244, 244, 0.7);
+            margin-top: 30px;
+        }
+
+        #external-back {
+            text-align: center;
+            margin-top: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            h2 {
+                font-size: 1.5em;
+            }
+
+            p {
+                font-size: 1.1em;
+            }
+
+            button {
+                padding: 12px 30px;
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Slide 0: Cast to TV prompt -->
+        <div class="slide active" id="slide-cast">
+            <h2>For the Best Experience...</h2>
+            <p style="margin-top: 30px;">If you can cast this to a nearby TV, consider sharing the moment on the big screen!</p>
+            <p style="margin-top: 20px; font-size: 0.95em; color: rgba(244, 244, 244, 0.7);">Use your device's screen mirroring feature to display this page.</p>
+            <div style="margin-top: 40px;">
+                <button onclick="nextSlide()">I'm ready!</button>
+                <button class="secondary" onclick="nextSlide()">No Thank You</button>
+            </div>
+        </div>
+
+        <!-- Slide 1: Are you January? -->
+        <div class="slide" id="slide-0">
+            <h1>Are you January?</h1>
+            <p style="margin-top: 30px;">Before we begin, I need to make sure this gift finds its rightful owner.</p>
+            <div style="margin-top: 40px;">
+                <button onclick="nextSlide()">Yes, that's me!</button>
+                <button class="secondary" onclick="showWrongPerson()">No, that's not me</button>
+            </div>
+        </div>
+
+        <!-- Slide 2: Wrong person message -->
+        <div class="slide" id="slide-wrong">
+            <h2>Oops!</h2>
+            <p style="margin-top: 30px;">This gift isn't for you, but I hope you find yours under the tree.</p>
+            <p>Happy holidays anyway! 🎄</p>
+            <button class="secondary" onclick="goBack()" style="margin-top: 30px;">Go Back</button>
+        </div>
+
+        <!-- Slide 3: Welcome & Name reflection -->
+        <div class="slide" id="slide-1">
+            <h2>Perfect<span style="display: block; font-size: 1.3em; margin-top: 25px; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);">January</span> Let's begin your Secret Santa journey...</h2>
+            <p style="margin-top: 30px;">What a name to carry—the threshold month, the one that welcomes new light after the longest dark.</p>
+            <p style="margin-top: 20px;">It seems fitting, somehow.</p>
+            <button onclick="nextSlide()" style="margin-top: 40px;">Continue</button>
+        </div>
+
+        <!-- Slide 4: First gift instruction - Yellow Blanket -->
+        <div class="slide" id="slide-2">
+            <div class="gift-icon">🎁</div>
+            <div class="gift-title">Gift One</div>
+            <p>Open your first gift now...</p>
+            <button onclick="nextSlide()" style="margin-top: 30px;">I've opened it!</button>
+            <div>
+                <button class="back-arrow" onclick="previousSlide()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Slide 5: Yellow Blanket message -->
+        <div class="slide" id="slide-3">
+            <p><span class="italic">Yellow</span> seemed right for someone who finds God in sunshine and open trails.</p>
+            <p style="margin-top: 20px;">Here's warmth for when you're not out chasing it.</p>
+            <button onclick="nextSlide()" style="margin-top: 40px;">Continue</button>
+            <div>
+                <button class="back-arrow" onclick="previousSlide()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Slide 6: Second gift instruction - Reese's -->
+        <div class="slide" id="slide-4">
+            <div class="gift-icon">🎁</div>
+            <div class="gift-title">Gift Two</div>
+            <p>Open your second gift now...</p>
+            <button onclick="nextSlide()" style="margin-top: 30px;">I've opened it!</button>
+            <div>
+                <button class="back-arrow" onclick="previousSlide()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Slide 7: Reese's message -->
+        <div class="slide" id="slide-5">
+            <p>The <span class="italic">Reese's</span> need no metaphor.</p>
+            <p style="margin-top: 20px;">Sometimes joy is just peanut butter and chocolate, and that's enough.</p>
+            <button onclick="nextSlide()" style="margin-top: 40px;">Continue</button>
+            <div>
+                <button class="back-arrow" onclick="previousSlide()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Slide 8: Third gift instruction - Book -->
+        <div class="slide" id="slide-6">
+            <div class="gift-icon">🎁</div>
+            <div class="gift-title">Gift Three</div>
+            <p>Open your third gift now...</p>
+            <button onclick="nextSlide()" style="margin-top: 30px;">I've opened it!</button>
+            <div>
+                <button class="back-arrow" onclick="previousSlide()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: Book message -->
+        <div class="slide" id="slide-7">
+            <p><span class="italic">The God of the Garden</span> felt like it might speak your language—finding God in the growing things, on the trail, in the honest work of becoming.</p>
+            <p style="margin-top: 20px;">Peterson writes about gardens and grief, about what gets planted and what gets pruned, about how the dirt is holy and the path is prayer.</p>
+            <button onclick="nextSlide()" style="margin-top: 40px;">Continue</button>
+            <div>
+                <button class="back-arrow" onclick="previousSlide()">← Back</button>
+            </div>
+        </div>
+
+        <!-- Slide 10: Final blessing -->
+        <div class="slide" id="slide-8">
+            <h2>✨</h2>
+            <p style="margin-top: 30px;">May your winter be warm, your snacks be sweet, and your way be marked by light.</p>
+            <p style="margin-top: 40px; font-size: 1.5em; color: #ffd700;">Merry Christmas!</p>
+            <p class="small-text">— Your Secret Santa</p>
+        </div>
+    </div>
+
+    <!-- External back button for final slide -->
+    <div id="external-back" style="display: none;">
+        <button class="back-arrow" onclick="previousSlide()">← Back</button>
+    </div>
+
+    <script>
+        // Create snowflakes
+        function createSnowflakes() {
+            const snowflakeCount = 50;
+            const container = document.body;
+            
+            for (let i = 0; i < snowflakeCount; i++) {
+                const snowflake = document.createElement('div');
+                snowflake.classList.add('snowflake');
+                snowflake.innerHTML = '❄';
+                snowflake.style.left = Math.random() * 100 + '%';
+                snowflake.style.animationDuration = Math.random() * 3 + 2 + 's';
+                snowflake.style.animationDelay = Math.random() * 5 + 's';
+                snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+                container.appendChild(snowflake);
+            }
+        }
+
+        createSnowflakes();
+
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[n].classList.add('active');
+            
+            // Show external back button only on final slide (slide 10, index 10)
+            const externalBack = document.getElementById('external-back');
+            if (n === slides.length - 1) {
+                externalBack.style.display = 'block';
+            } else {
+                externalBack.style.display = 'none';
+            }
+        }
+
+        function nextSlide() {
+            if (currentSlide === 0) {
+                // From cast prompt to "Are you January?"
+                currentSlide = 1;
+            } else if (currentSlide === 1) {
+                // From "Are you January?" to Welcome (skip wrong person slide at index 2)
+                currentSlide = 3;
+            } else if (currentSlide < slides.length - 1) {
+                currentSlide++;
+            }
+            showSlide(currentSlide);
+        }
+
+        function showWrongPerson() {
+            slides.forEach(slide => slide.classList.remove('active'));
+            document.getElementById('slide-wrong').classList.add('active');
+            document.getElementById('external-back').style.display = 'none';
+        }
+
+        function goBack() {
+            currentSlide = 1; // Go back to "Are you January?"
+            showSlide(currentSlide);
+        }
+
+        function previousSlide() {
+            if (currentSlide > 3) { // Don't go back before the welcome slide
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+    </script>
+</body>
+</html>
